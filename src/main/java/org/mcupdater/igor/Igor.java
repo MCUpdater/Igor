@@ -4,6 +4,9 @@ import java.util.logging.Logger;
 
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
+
+import org.mcupdater.igor.daemon.Daemon;
+
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -15,6 +18,8 @@ public class Igor {
 	public static Configuration config;
 	public static Logger		log	= Logger.getLogger(Version.MOD_NAME);
 
+	public Daemon				_daemon;
+
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent evt) {
 		log.info("Yeth, Marthter?");
@@ -25,19 +30,19 @@ public class Igor {
 		@SuppressWarnings("unused")
 		int httpPort = config.get(Configuration.CATEGORY_GENERAL, "http.port", 8080).getInt();
 		
-		@SuppressWarnings("unused")
-		boolean useDaemon = config.get(Configuration.CATEGORY_GENERAL, "daemon.fork", true).getBoolean(true);
-
-		if (config.hasChanged()) {
-			config.save();
-		}
-
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent evt) {
 		// actually spin up the butler
+		boolean forkDaemon = config.get(Configuration.CATEGORY_GENERAL, "daemon.fork", true).getBoolean(true);
+		_daemon = new Daemon(forkDaemon);
+
 		log.info("Marthter, the creathathure awaketh!");
+
+		if (config.hasChanged()) {
+			config.save();
+		}
 	}
 }
