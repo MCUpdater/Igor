@@ -1,0 +1,16 @@
+[
+{
+  "modid": "igor",
+  "name": "Igor",
+  "description": "Server management butler",
+  "version": "@version@",
+  "mcversion": "@mcversion@",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["allaryin"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
