@@ -14,7 +14,7 @@ public class Daemon {
 
 		@Override
 		public void run() {
-			Logger log = LogManager.getLogger(Version.MOD_NAME);
+			Logger log = LogManager.getLogger(Version.MOD_NAME+"_Clock");
 			log.entry();
 			// int c = 0;
 			while (true) {
@@ -48,6 +48,7 @@ public class Daemon {
 	private boolean startMonitor(boolean fork) {
 		boolean result = false;
 		if (fork) {
+			fork = false;
 			// if we're forking an external daemon, do so
 			_monitor = null;
 
@@ -56,27 +57,36 @@ public class Daemon {
 			final String path = System.getProperty("java.home") + separator
 					+ "bin" + separator + "java";
 
-			URL jarURL = Daemon.class.getResource("Daemon.class");
-			if (jarURL.getProtocol().equals("jar")) {
-				String jarPath = jarURL.getPath();
+			final URL jarURL = Daemon.class.getResource("Daemon.class");
+			final String jarProtocol = jarURL.getProtocol();
+			String jarPath = jarURL.getPath();
+			final ProcessBuilder proc;
+			if (jarProtocol.equals("jar")) {
 				jarPath = jarPath.substring(1, jarPath.indexOf("!"));
-				ProcessBuilder proc = new ProcessBuilder(path, "-cp",
+				proc = new ProcessBuilder(path, "-cp",
 						classpath, "-jar", jarPath);
+			} else if( jarProtocol.equals("file")){
+				proc = new ProcessBuilder(path, "-cp",
+						classpath, jarPath);
+			} else {
+				proc = null;
+			}
+			
+			if( proc != null ) {
 				try {
 					proc.start();
-					result = true;
+					fork = result = true;
 				} catch (IOException e) {
 					Igor.log.error("Unable to fork monitor daemon, reverting to thread");
 					// try again, this time as an internal thread
-					fork = false;
 				}
 			} else {
-				// we're not running from inside a jar
-				fork = false;
+				// we don't know what's going on, abort abort
+				Igor.log.info("Thorry, but I am unable to thpawn the daemon...");
 			}
 		}
 		if (!fork) {
-			Igor.log.info("Spinning up monitor as an internal thread :(");
+			Igor.log.info("Thpinning up monitor ath an internal thread.");
 			// else, we need to spin up the less robust daemon thread
 			_monitor = new MonitorThread(this);
 			_monitor.start();
