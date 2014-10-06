@@ -1,23 +1,25 @@
 package org.mcupdater.igor;
 
-import java.util.logging.Logger;
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mcupdater.igor.daemon.Daemon;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = Version.MOD_ID, name = Version.MOD_NAME, version = Version.VERSION, acceptedMinecraftVersions = "[1.6,1.7],", dependencies = "")
+@Mod(modid = Version.MOD_ID, name = Version.MOD_NAME, version = Version.VERSION, acceptedMinecraftVersions = "[1.7.10]", dependencies = "")
 public class Igor {
 	public static Configuration config;
-	public static Logger		log	= Logger.getLogger(Version.MOD_NAME);
+	public static Logger		log	= LogManager.getLogger(Version.MOD_NAME);
 
+	public static int			httpPort = 8080;
+	
 	public Daemon				_daemon;
-
+	
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent evt) {
 		log.info("Yeth, Marthter?");
@@ -25,8 +27,7 @@ public class Igor {
 		config = new Configuration(evt.getSuggestedConfigurationFile());
 		config.load();
 
-		@SuppressWarnings("unused")
-		int httpPort = config.get(Configuration.CATEGORY_GENERAL, "http.port", 8080).getInt();
+		httpPort = config.get(Configuration.CATEGORY_GENERAL, "http.port", httpPort).getInt();
 		
 		MinecraftForge.EVENT_BUS.register(this);
 	}

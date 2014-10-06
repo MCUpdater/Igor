@@ -2,8 +2,9 @@ package org.mcupdater.igor.daemon;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.logging.Logger;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mcupdater.igor.Igor;
 import org.mcupdater.igor.Version;
 
@@ -13,8 +14,8 @@ public class Daemon {
 
 		@Override
 		public void run() {
-			Logger log = Logger.getLogger(Version.MOD_NAME);
-			log.entering(ClockThread.class.getCanonicalName(), "run");
+			Logger log = LogManager.getLogger(Version.MOD_NAME);
+			log.entry();
 			// int c = 0;
 			while (true) {
 				try {
@@ -27,7 +28,7 @@ public class Daemon {
 					break;
 				}
 			}
-			log.exiting(ClockThread.class.getCanonicalName(), "run");
+			log.exit();
 		}
 	}
 
@@ -65,7 +66,7 @@ public class Daemon {
 					proc.start();
 					result = true;
 				} catch (IOException e) {
-					Igor.log.severe("Unable to fork monitor daemon, reverting to thread");
+					Igor.log.error("Unable to fork monitor daemon, reverting to thread");
 					// try again, this time as an internal thread
 					fork = false;
 				}

@@ -1,11 +1,11 @@
 package org.mcupdater.igor.daemon;
 
-import java.util.logging.Logger;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mcupdater.igor.Version;
 
 public class MonitorThread extends Thread {
-	private static Logger	log	= Logger.getLogger(Version.MOD_NAME+" Monitor");
+	private static Logger	log	= LogManager.getLogger(Version.MOD_NAME+"_Monitor");
 
 	private final Daemon	_daemon;
 
